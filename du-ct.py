@@ -162,20 +162,16 @@ def compute_unsupervised_loss(predict, target,pp,uncer):
     usue_cpsloss = loss_seg_dice * torch.exp(hebing)
     print(torch.exp(hebing))
     return usue_cpsloss
-
 class UnetDsv3(nn.Module):
     def __init__(self, in_size, out_size, scale_factor):
         super(UnetDsv3, self).__init__()
         self.dsv = nn.Sequential(nn.Conv3d(in_size, out_size, kernel_size=1, stride=1, padding=0),
                                  nn.Upsample(scale_factor=scale_factor, mode='trilinear'), )
-
     def forward(self, input):
         return self.dsv(input)
-
 def get_current_consistency_weight(epoch):
     # Consistency ramp-up from https://arxiv.org/abs/1610.02242
     return args.consistency * ramps.sigmoid_rampup(epoch, args.consistency_rampup)
-
 if __name__ == "__main__":
     ## make logger file
   for k in range(0,5):
