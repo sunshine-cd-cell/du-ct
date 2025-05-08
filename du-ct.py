@@ -15,7 +15,7 @@ import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from networks.hhhh import VNet
+from networks.vnet import VNet
 from dataloaders import utils
 from utils import ramps, losses
 from dataloaders.la_heart import LAHeart, RandomCrop, CenterCrop, RandomRotFlip, ToTensor, TwoStreamBatchSampler,RandomCrop1
@@ -27,7 +27,7 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str, default='/root/autodl-tmp/root/brats_data/pro/train', help='Name of Experiment')
-parser.add_argument('--exp', type=str, default='Kours_10', help='model_name')
+parser.add_argument('--exp', type=str, default='5_K_ours', help='model_name')
 parser.add_argument('--max_iterations', type=int, default=20000, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int, default=4, help='batch_size per gpu')
 parser.add_argument('--labeled_bs', type=int, default=2, help='labeled_batch_size per gpu')
