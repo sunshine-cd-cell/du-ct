@@ -34,7 +34,7 @@ parser.add_argument('--labeled_bs', type=int, default=2, help='labeled_batch_siz
 parser.add_argument('--base_lr', type=float, default=0.01, help='maximum epoch number to train')
 parser.add_argument('--deterministic', type=int, default=1, help='whether use deterministic training')
 parser.add_argument('--seed', type=int, default=1337, help='random seed')
-parser.add_argument('--gpu', type=str, default='0', help='GPU to use')
+parser.add_argument('--gpu', type=str, default='1', help='GPU to use')
 ### costs
 parser.add_argument('--ema_decay', type=float, default=0.99, help='ema_decay')
 parser.add_argument('--consistency_type', type=str, default="mse", help='consistency_type')
