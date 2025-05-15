@@ -60,7 +60,6 @@ if args.deterministic:
     torch.cuda.manual_seed(args.seed)
 num_classes = 2
 patch_size = (96, 96, 96)
-dice_loss = losses.DiceLoss(2)
 relu = nn.ReLU(inplace=True)
 
 def calculate_supervised_loss(outputs_list, label_batch, args):
@@ -198,7 +197,7 @@ if __name__ == "__main__":
         dropout_path_rate=0.2,
         use_checkpoint=True,
     ).cuda()
-    db_train = LAHeart(base_dir=train_data_path,
+    db_train = Brats(base_dir=train_data_path,
                        split='train',
                        train_fold=x,
                        transform=transforms.Compose([
