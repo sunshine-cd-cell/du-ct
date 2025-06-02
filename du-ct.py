@@ -331,6 +331,5 @@ if __name__ == "__main__":
             time1 = time.time()
         if iter_num >= max_iterations:
             break
-            ###val
 
 
