@@ -140,7 +140,7 @@ def cal_dice(prediction, label, num=2):
 def compute_unsupervised_loss(predict, target,pp,uncer):
     with torch.no_grad():
         pp = F.softmax(pp)
-        logits_u_aug_start, label = torch.max(pp, dim=1)
+        logits_u_aug_start, label = torch.max(pp.detach(), dim=1)
         # 1
         mask = label == 1
         entropy1 = uncer[mask]
@@ -281,16 +281,16 @@ if __name__ == "__main__":
             uncer_t = calculate_uncer(mean_preds_t, t_outputs_aux_soft_list, kl_distance, args)
             uncer_v = calculate_uncer(mean_preds_v, v_outputs_aux_soft_list, kl_distance, args)
             v_u_preds = F.softmax(outputs[labeled_bs:], dim=1)
-            v_u_logits, v_u_label = torch.max(v_u_preds , dim=1)
+            v_u_logits, v_u_label = torch.max(v_u_preds.detach() , dim=1)
             cpsloss_v= compute_unsupervised_loss(logits[labeled_bs:], v_u_label.clone(),                                                   
                                                                      outputs[labeled_bs:].detach(), uncer_v)
             t_u_preds = F.softmax(logits[labeled_bs:], dim=1)
-            t_u_logits, t_u_label = torch.max(t_u_preds, dim=1)
+            t_u_logits, t_u_label = torch.max(t_u_preds.detach(), dim=1)
             cpsloss_t = compute_unsupervised_loss(outputs[labeled_bs:], t_u_label.clone(),                                                                   
                                                                         logits[labeled_bs:].detach(),uncer_t)
             
-            t_logits_u_aug, t_label_u_aug = torch.max(t_outputs_aux1_soft[:labeled_bs], dim=1)
-            v_logits_u_aug, v_label_u_aug = torch.max(v_outputs_aux1_soft[:labeled_bs], dim=1)
+            t_logits_u_aug, t_label_u_aug = torch.max(t_outputs_aux1_soft[:labeled_bs].detach(), dim=1)
+            v_logits_u_aug, v_label_u_aug = torch.max(v_outputs_aux1_soft[:labeled_bs].detach(), dim=1)
 
             t_dice = cal_dice(t_label_u_aug.cpu().numpy(), label_batch[:labeled_bs].cpu().numpy())
             v_dice = cal_dice(v_label_u_aug.cpu().numpy(), label_batch[:labeled_bs].cpu().numpy())
