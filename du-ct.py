@@ -157,7 +157,7 @@ def compute_unsupervised_loss(predict, target,pp,uncer):
     predict_soft = torch.softmax(predict, dim=1)
     predict_soft = predict_soft[:, 1, :, :, :]
     loss_seg_dice = losses.dice_loss(predict_soft, target == 1)
-    hebing = -(torch.tensor(mean_entropy0) + torch.tensor(mean_entropy1))
+    hebing = -(mean_entropy0+ mean_entropy1)
     usue_cpsloss = loss_seg_dice * torch.exp(hebing)
     print(torch.exp(hebing))
     return usue_cpsloss
