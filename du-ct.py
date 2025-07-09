@@ -18,7 +18,7 @@ import torch.nn as nn
 from networks.vnet import VNet
 from dataloaders import utils
 from utils import ramps, losses
-from dataloaders.la_heart import LAHeart, RandomCrop, CenterCrop, RandomRotFlip, ToTensor, TwoStreamBatchSampler,RandomCrop1
+from dataloaders.brats import Brats, RandomCrop, CenterCrop, RandomRotFlip, ToTensor, TwoStreamBatchSampler
 import matplotlib
 import math
 matplotlib.use('Agg')
@@ -97,6 +97,10 @@ class CustomSwinUNETR(SwinUNETR):
         self.dsv0 = UnetDsv3(in_size=12, out_size=2, scale_factor=2).cuda()
         self.dsv3 = nn.Conv3d(in_channels=12, out_channels=2, kernel_size=1).cuda()
         self.out = None
+        self.dropout3 = nn.Dropout3d(p=0.5)
+        self.dropout2 = nn.Dropout3d(p=0.3)
+        self.dropout1 = nn.Dropout3d(p=0.2)
+        self.dropout0 = nn.Dropout3d(p=0.1)
     def forward(self, x_in):
         if not torch.jit.is_scripting():
             self._check_input_size(x_in.shape[2:])
@@ -109,9 +113,13 @@ class CustomSwinUNETR(SwinUNETR):
 
         dec4 = self.encoder10(hidden_states_out[4])
         dec3 = self.decoder5(dec4, hidden_states_out[3])
+        dec3 = self.dropout3(dec3)
         dec2 = self.decoder4(dec3, enc3)
+        dec2 = self.dropout2(dec2)
         dec1 = self.decoder3(dec2, enc2)
+        dec1 = self.dropout1(dec1)
         dec0 = self.decoder2(dec1, enc1)
+        dec0 = self.dropout0(dec0)
 
         out = self.decoder1(dec0, enc0)
         out = self.dsv3(out)
@@ -315,7 +323,7 @@ if __name__ == "__main__":
             
             optimizer1.step()
             optimizer2.step()
-            logging.info('iteration %d : loss : %f superv:%f,supert:%f ,cpsloss_v: %f, cpsloss_t: %f ' %
+            logging.info('iteration %d : loss : %f super_v:%f,super_t:%f ,cpsloss_v: %f, cpsloss_t: %f ' %
                            (iter_num, loss.item(), supervised_loss_v.item(), supervised_loss_t.item(),
                             cpsloss_v.item(), cpsloss_t.item()))
             iter_num = iter_num + 1
